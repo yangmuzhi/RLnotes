@@ -25,7 +25,7 @@ input:  state dims (1,4)
 
 class Actor(object):
     ## def network and params
-    def __init__(self, sess, n_action=4, state_shape=4, n_hidden=28):
+    def __init__(self, sess, n_action=2, state_shape=4, n_hidden=28):
         ## 
         self.sess = sess
         ##state dims (1,4)
@@ -48,7 +48,7 @@ class Actor(object):
             self.picked_action_probs = tf.gather(tf.reshape(self.probs,[-1]), gather_indices)
             ##
             self.loss = tf.reduce_mean(-tf.log(self.picked_action_probs)*self.td_error, name="actor_loss")
-            self.optimizer = tf.train.RMSPropOptimizer(0.01)
+            self.optimizer = tf.train.RMSPropOptimizer(0.001, 0.9)
             self.train_op = self.optimizer.minimize(self.loss)
        
     def choose_action(self, state):
@@ -81,7 +81,7 @@ class Actor(object):
 ###critic
 class Critic(object):
     ## def network and params
-    def __init__(self, sess, state_shape=[4], discount_factor=0.9, n_hidden=28):
+    def __init__(self, sess, state_shape=4, discount_factor=0.9, n_hidden=64):
         ## 
         self.sess = sess
 
@@ -109,7 +109,7 @@ class Critic(object):
                                      #-critic.value) 
             self.loss = tf.reduce_mean(tf.square(self.td_error), name="critic_loss")
             #tf.reduce_mean(tf.square(td_error), name="critic_loss")
-            self.optimizer = tf.train.RMSPropOptimizer(0.01)
+            self.optimizer = tf.train.RMSPropOptimizer(0.001, 0.9)
             self.train_op = self.optimizer.minimize(self.loss)
     
     def update(self, state, reward, next_state):
@@ -155,10 +155,10 @@ New Worker
 
 ##
 class Worker(object):
-    def __init__(self, sess, name, env, actor, critic, discount_facor=0.9, num_step=20, max_episode=10):
+    def __init__(self, sess, name, env, actor, critic, discount_facor=0.9, num_step=50, max_episode=10, state_shape=4):
         
         ###def actor and critic
-        self.name = name##z name 没搞懂 
+        self.name = name## name 
         self.env = env
         self.state = self.env.reset()
         self.Transition = collections.namedtuple("Transition", 
@@ -169,8 +169,10 @@ class Worker(object):
         self.reward_his = []    ## whole reward in history
         self.reward_track = []  ##reward per epsiode
         self.i_episode = 0
+        self.state_shape = 4
         self.max_episode = max_episode
         self.Transition = collections.namedtuple("Transition", ["state", "action", "reward", "next_state", "done"])
+        
 
         with tf.variable_scope(name):
             
@@ -187,7 +189,7 @@ class Worker(object):
         #td_error = worker.critic.update(states, rewards, next_states)                
         self.actor.update(states, actions, td_error)
         
-        if (self.i_episode % 5 ==0)&(self.i_episode>0):
+        if (self.i_episode % 20 ==0)&(self.i_episode>0):
             self.plot_reward()
             
 
@@ -198,8 +200,11 @@ class Worker(object):
             ##choose action
             state = self.state
             action = self.actor.choose_action(state.reshape(-1,self.state_shape))
-            #worker.actor.choose_action(state)
-            next_state, reward, done, lives= self.env.step(action)
+            
+            #action = worker.actor.choose_action(worker.state)
+            #next_state, reward, done, info = worker.env.step(action)
+            
+            next_state, reward, done, info = self.env.step(action)
             self.reward_track.append(reward)
             transitions.append(self.Transition(state=state,action=action,
                                                reward=reward,next_state=next_state,done=done))
@@ -240,16 +245,13 @@ class Worker(object):
             dones.append(transition.done)
         return states,actions,next_states,dones,rewards
 
-            
-            
-        
-    def save_to_sampling_pool(self):
-        ##add history information to a fold or a csv
-        pass
     
     def plot_reward(self):
+        
         R = [np.sum(self.reward_his[i]) for i in range(len(self.reward_his))]
+        plt.figure()
         plt.plot(range(len(self.reward_his)), R)   
+        plt.show()
 
 
         
@@ -259,27 +261,15 @@ env = gym.make("CartPole-v0")
 
 sess = tf.Session()
 
-
-###
-actor = Actor(sess)
-critic = Critic(sess)
-
-
-worker = Worker(sess, name="worker1", env=env, actor=Actor, critic=Critic)
+worker = Worker(sess, name="worker2", env=env, actor=Actor, critic=Critic)
 
 sess.run(tf.global_variables_initializer())
 
-MAX_EPISODE = 10
+MAX_EPISODE = 1000
 while True: 
     
     worker.run()   
-    
     if worker.i_episode >= MAX_EPISODE:
         break
         
-        
-
-
-
-
 
