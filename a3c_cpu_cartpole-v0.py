@@ -25,7 +25,7 @@ input:  state dims (1,4)
 
 class Actor(object):
     ## def network and params
-    def __init__(self, sess, n_action=2, state_shape=4, n_hidden=28):
+    def __init__(self, sess, n_action=2, state_shape=4, n_hidden=200):
         ## 
         self.sess = sess
         ##state dims (1,4)
@@ -69,7 +69,7 @@ class Actor(object):
         feed_dict = {self.state:state,
                      self.action:action, self.td_error:td_error}
         _, loss = self.sess.run([self.train_op, self.loss], feed_dict)
-        print("actor loss: ",loss)
+        #print("actor loss: ",loss)
       
         
     def exchange_net_params(self):
@@ -81,7 +81,7 @@ class Actor(object):
 ###critic
 class Critic(object):
     ## def network and params
-    def __init__(self, sess, state_shape=4, discount_factor=0.9, n_hidden=64):
+    def __init__(self, sess, state_shape=4, discount_factor=0.9, n_hidden=200):
         ## 
         self.sess = sess
 
@@ -109,7 +109,7 @@ class Critic(object):
                                      #-critic.value) 
             self.loss = tf.reduce_mean(tf.square(self.td_error), name="critic_loss")
             #tf.reduce_mean(tf.square(td_error), name="critic_loss")
-            self.optimizer = tf.train.RMSPropOptimizer(0.001, 0.9)
+            self.optimizer = tf.train.RMSPropOptimizer(0.03, 0.9)
             self.train_op = self.optimizer.minimize(self.loss)
     
     def update(self, state, reward, next_state):
@@ -126,7 +126,7 @@ class Critic(object):
                                      self.reward:reward,
                                      self.next_value:next_value})
 
-        print("critic loss: ", loss)
+        #print("critic loss: ", loss)
         
         
         """
@@ -189,7 +189,7 @@ class Worker(object):
         #td_error = worker.critic.update(states, rewards, next_states)                
         self.actor.update(states, actions, td_error)
         
-        if (self.i_episode % 20 ==0)&(self.i_episode>0):
+        if (self.i_episode % 50 ==0)&(self.i_episode>0):
             self.plot_reward()
             
 
@@ -239,8 +239,8 @@ class Worker(object):
             reward = transition.reward + self.critic.discount_factor * reward
       # Accumulate updates
             states.append(transition.state)
-            actions.append(transition.action)
-            rewards.append(transition.reward)
+            actions.append(transition.action)           
+            rewards.append(reward)
             next_states.append(transition.next_state)
             dones.append(transition.done)
         return states,actions,next_states,dones,rewards
@@ -265,11 +265,27 @@ worker = Worker(sess, name="worker2", env=env, actor=Actor, critic=Critic)
 
 sess.run(tf.global_variables_initializer())
 
-MAX_EPISODE = 1000
+MAX_EPISODE = 2000
 while True: 
     
     worker.run()   
     if worker.i_episode >= MAX_EPISODE:
         break
-        
 
+#len(worker.reward_his[-1])
+        
+###play the game
+import time 
+state = env.reset()
+i = 0
+while True:
+    time.sleep(0.1)
+    env.render()
+    action = worker.actor.choose_action(state)
+    next_state, reward, done, info = env.step(action)
+
+    print(reward)
+    if done:
+        env.close()
+        break
+    
