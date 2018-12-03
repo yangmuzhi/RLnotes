@@ -150,12 +150,27 @@ class Critic(object):
 New Worker
 
 """        
-    
+
+
+def make_copy_params_op(v1_list, v2_list):
+  """
+  Creates an operation that copies parameters from variable in v1_list to variables in v2_list.
+  The ordering of the variables in the lists must be identical.
+  """
+  v1_list = list(sorted(v1_list, key=lambda v: v.name))
+  v2_list = list(sorted(v2_list, key=lambda v: v.name))
+
+  update_ops = []
+  for v1, v2 in zip(v1_list, v2_list):
+    op = v2.assign(v1)
+    update_ops.append(op)
+
+  return update_ops    
 
 
 ##
 class Worker(object):
-    def __init__(self, sess, name, env, actor, critic, discount_facor=0.9, num_step=50, max_episode=10, state_shape=4):
+    def __init__(self, sess, name, env, actor, critic, discount_facor=0.9, num_step=50, max_episode=200, state_shape=4):
         
         ###def actor and critic
         self.name = name## name 
@@ -172,6 +187,10 @@ class Worker(object):
         self.state_shape = 4
         self.max_episode = max_episode
         self.Transition = collections.namedtuple("Transition", ["state", "action", "reward", "next_state", "done"])
+        self.copy_params_op = make_copy_params_op(
+        tf.contrib.slim.get_variables(scope="global", collection=tf.GraphKeys.TRAINABLE_VARIABLES),
+        tf.contrib.slim.get_variables(scope=self.name+'/', collection=tf.GraphKeys.TRAINABLE_VARIABLES))
+
         
 
         with tf.variable_scope(name):
@@ -182,16 +201,18 @@ class Worker(object):
         #self.copy_params_from_global
         
     def run(self):
-            
-        states,actions,next_states,dones,rewards = self.play_n_step(self.num_step) 
+        while  not coord.should_stop():    
+            sess.run(self.copy_params_op)
+            states,actions,next_states,dones,rewards = self.play_n_step(self.num_step) 
         #states,actions,next_states,dones,rewards = worker.play_n_step(10) 
-        td_error = self.critic.update(states, rewards, next_states) 
+            td_error = self.critic.update(states, rewards, next_states) 
         #td_error = worker.critic.update(states, rewards, next_states)                
-        self.actor.update(states, actions, td_error)
+            self.actor.update(states, actions, td_error)
         
-        if (self.i_episode % 50 ==0)&(self.i_episode>0):
-            self.plot_reward()
-            
+            if (self.i_episode % 50 ==0)&(self.i_episode>0):
+                self.plot_reward()
+            if self.i_episode >= self.max_episode:
+                break
 
     def play_n_step(self,num_step):
         
@@ -212,7 +233,7 @@ class Worker(object):
                         
             if done:          
                 self.reward_his.append(self.reward_track)                
-                print("\n Episode",self.i_episode,"has been done\n In this episode the reward is ", sum(self.reward_track))
+                print("\n Episode",self.i_episode, self.name ,"has been done\n In this episode the reward is ", sum(self.reward_track))
                 self.reward_track = []
                 self.i_episode += 1
                 self.state = self.env.reset()    
@@ -225,8 +246,6 @@ class Worker(object):
             #next_value = self.sess.run(self.value,{self.state: next_state}).reshape(-1)
             reward = self.critic.sess.run(self.critic.value,
                                           {self.critic.state:transitions[-1].state.reshape(-1,self.state_shape)}).reshape(-1)
-        
-       
 
         # Accumulate minibatch exmaples
         states = []
@@ -244,8 +263,7 @@ class Worker(object):
             next_states.append(transition.next_state)
             dones.append(transition.done)
         return states,actions,next_states,dones,rewards
-
-    
+        
     def plot_reward(self):
         
         R = [np.sum(self.reward_his[i]) for i in range(len(self.reward_his))]
@@ -255,22 +273,48 @@ class Worker(object):
 
 
         
-###define the env, sess        ##
+###define the env, sess, global, coord##
      
 env = gym.make("CartPole-v0")
 
 sess = tf.Session()
 
-worker = Worker(sess, name="worker2", env=env, actor=Actor, critic=Critic)
+#worker = Worker(sess, name="worker2", env=env, actor=Actor, critic=Critic)
 
-sess.run(tf.global_variables_initializer())
+num_agent = 3
 
-MAX_EPISODE = 2000
-while True: 
+##
+ # Global policy and value nets
+ 
+
+with tf.device("/cpu:0"):
+    with tf.variable_scope("global"):
+        actor_net = Actor(sess)
+        critic_net = Critic(sess)
     
-    worker.run()   
-    if worker.i_episode >= MAX_EPISODE:
-        break
+    workers = []
+    for worker_id in range(num_agent):
+        workers.append(Worker(sess, name="worker_{}".format(worker_id), env=env, actor=Actor, critic=Critic))
+    
+    sess.run(tf.global_variables_initializer())
+    coord = tf.train.Coordinator()
+    
+worker_threads = []
+for worker in workers:
+    worker_fn = lambda worker=worker: worker.run()
+    t = threading.Thread(target=worker_fn)
+    t.start()
+    worker_threads.append(t)
+
+coord.join(worker_threads)
+
+
+
+
+
+
+###
+"""
 
 #len(worker.reward_his[-1])
         
@@ -288,4 +332,7 @@ while True:
     if done:
         env.close()
         break
+
+
+"""
     
