@@ -1,20 +1,16 @@
 # RLnotes
 
- This notes contains some reinforcement learning algorithms. 
+ This notes contains some reinforcement learning algorithms.
 
-* q learing
+# ToDo
 
-    * qleanring.py; environment is simple game named maze 
+- [x] tabular Q learning
+- [ ] DQN
 
-
-* deep q learning
-
-    * DQNdemo; environment is simple game named maze 
-
-* ac
-
-* a2c
-
-    * A2C_breakout_v0.py
-    *  a2c_break.py
-
+  - [ ] Classic DQN
+  - [ ] Experience replay
+  - [ ] Double DQN
+- [ ] AC
+- [ ] A2C
+- [ ] A3C
+- [ ] PPO
