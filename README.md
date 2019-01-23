@@ -6,13 +6,13 @@
 
 ## RL Algorithms
 - [x] tabular Q learning
-- [ ] DQN
+- [x] DQN
 
   - [ ] Classic DQN
   - [ ] Experience replay
   - [x] Double DQN
 - [ ] AC
-- [ ] A2C
+- [x] A2C
 - [ ] A3C
 - [ ] PPO
 
