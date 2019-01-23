@@ -1,6 +1,7 @@
 """classic deep_qlearning using keras
 
 """
+
 import numpy as np
 import random
 from keras.optimizers import Adam

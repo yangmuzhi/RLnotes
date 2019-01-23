@@ -14,6 +14,7 @@ class Sampling_Pool:
         self.buffer["action"] = []
         self.buffer["next_state"] = []
         self.size = self.get_size()
+
     def add_to_buffer(self, ob):
         # ob : state, reward, done, action, next_state
         self.size = self.get_size()
@@ -36,8 +37,11 @@ class Sampling_Pool:
         np.random.shuffle(idx)
         return idx
 
-    def get_sample(self, batch_size=32):
-        idx = self.shuffle()[0:batch_size]
+    def get_sample(self, batch_size=32, shuffle=True):
+        if shuffle :
+            idx = self.shuffle()[0:batch_size]
+        else:
+            idx = list(range(self.get_size()))
         state = np.array([self.buffer["state"][i] for i in idx ])
         reward = np.array([self.buffer["reward"][i] for i in idx ])
         done = np.array([self.buffer["done"][i] for i in idx ])
@@ -48,3 +52,9 @@ class Sampling_Pool:
     def get_size(self):
         return len(self.buffer["state"])
 
+    def clear(self):
+        self.buffer["state"] = []
+        self.buffer["reward"] = []
+        self.buffer["done"] = []
+        self.buffer["action"] = []
+        self.buffer["next_state"] = []
