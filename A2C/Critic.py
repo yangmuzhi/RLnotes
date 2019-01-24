@@ -32,10 +32,10 @@ class Critic:
 
         return K.function([self.model.input, self.state_value], [], updates=updates)
 
-    def fit(self, state, state_value):
-        """ Perform one epoch of training
-        """
-        self.model.fit(state, state_value, epochs=1, verbose=0)
+    #def fit(self, state, state_value):
+    #    """ Perform one epoch of training
+    #    """
+    #    self.model.fit(state, state_value, epochs=1, verbose=0)
 
     def value(self, state):
         """ Critic Value Prediction

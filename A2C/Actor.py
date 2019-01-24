@@ -41,10 +41,10 @@ class Actor:
         updates = self.opt.get_updates(self.model.trainable_weights, [], loss)
         return K.function([self.model.input, self.action, self.td_error], [], updates=updates)
 
-    def fit(self, state, action_prob):
-        """ Perform one epoch of training
-        """
-        self.model.fit(state, action_prob, epochs=1, verbose=0)
+    #def fit(self, state, action_prob):
+    #    """ Perform one epoch of training
+    #    """
+    #    self.model.fit(state, action_prob, epochs=1, verbose=0)
 
     def action_prob(self, state):
         """ Critic Value Prediction
