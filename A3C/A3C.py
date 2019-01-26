@@ -10,7 +10,7 @@ class A3C(A2C):
         if n_threads == None:
             self.n_threads = cpu_count()
         super(A3C, self).__init__(state_shape,n_action)
-        
+
     def trainAsy(self, env, episodes):
         """异步地使用A2C的train方法
         """
@@ -20,9 +20,5 @@ class A3C(A2C):
             t.start()
             time.sleep(1)
         [t.join() for t in threads]
-        
-        
-        
-        
-        
-        
+
+    
