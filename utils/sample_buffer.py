@@ -1,6 +1,8 @@
 """
 目的：
 sampling pool可以自己打乱顺序
+遇到state shape的问题：如batch (10,210,160,3),一个则为（210,160,3)
+从sample buffer中取出的对于batch 更新可以直接用。
 """
 import numpy as np
 

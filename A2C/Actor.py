@@ -47,7 +47,7 @@ class Actor:
     #    self.model.fit(state, action_prob, epochs=1, verbose=0)
 
     def action_prob(self, state):
-        """ Critic Value Prediction
+        """  给出动作的概率
         """
         return self.model.predict(state)
 
