@@ -23,7 +23,7 @@ class Agent:
         self.q_target_net = self.build_net(net)
 
     def build_net(self, net):
-        if isinstance(self.state_shape, int):        
+        if isinstance(self.state_shape, int):
             inputs = Input((self.state_shape,))
         else:
             inputs = Input(self.state_shape)
