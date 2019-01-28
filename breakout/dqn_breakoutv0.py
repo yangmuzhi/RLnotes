@@ -7,7 +7,7 @@ import sys
 from utils.net import conv_breakout
 from dqn.deepqn import DQN
 
-eps = sys.argv[1]
+eps = int(sys.argv[1])
 
 
 env = gym.make("Breakout-v0")

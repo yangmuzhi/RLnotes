@@ -16,7 +16,7 @@ import gym
 env = gym.make('CartPole-v0')
 a3c = A3C(state_shape=4, n_action=2, net=simple_net)
 #a3c.train(env,100)
-a3c.trainAsy(env, 100)
+a3c.trainAsy('CartPole-v0', 50)
 
 
 

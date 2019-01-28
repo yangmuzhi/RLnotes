@@ -16,7 +16,6 @@ class DQN:
         self.agent = Agent(self.state_shape,self.n_action,self.lr,0.9,net)
         self.sampling_pool = Sampling_Pool(self.sampling_size)
         self.cum_r = []
-        self.save_name = save_name
 
     def train_agent(self):
         state, reward, done, action, next_state = self.sampling_pool.get_sample(self.batch_size)

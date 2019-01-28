@@ -6,6 +6,7 @@ from tqdm import tqdm
 import numpy as np
 from keras.utils import to_categorical
 import tensorflow as tf
+import gym
 
 class A3C(A2C):
     def __init__(self, state_shape, n_action, net, n_threads=None):
@@ -18,10 +19,10 @@ class A3C(A2C):
 
         super(A3C, self).__init__(state_shape,n_action,net) 
 
-    def trainAsy(self, env, episodes):
+    def trainAsy(self, env_name, episodes):
         """异步地使用A2C的train方法
         """
-        envs = [env for i in range(self.n_threads)]
+        envs = [gym.make(env_name) for i in range(self.n_threads)]
         threads = [Thread(target=self.train, args=(envs[i], episodes)) for i in range(self.n_threads)]
         for t in threads:
             t.start()
