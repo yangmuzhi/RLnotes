@@ -1,4 +1,3 @@
-
 import numpy as np
 from tqdm import tqdm
 from keras.models import Model
@@ -8,7 +7,8 @@ from keras.layers import Input, Dense, Flatten
 from utils.sample_buffer import Sampling_Pool
 from A2C.Actor import Actor
 from A2C.Critic import Critic
-
+import tensorflow as tf
+import keras.backend as K
 
 class A2C:
     """
@@ -27,7 +27,10 @@ class A2C:
         self.sampling_pool = Sampling_Pool()
         self.actor_update = self.actor.update()
         self.critic_update = self.critic.update()
-
+        global graph
+        graph = tf.get_default_graph()
+        
+       
     def build_share_net(self, net):
         # 暂时使用一个简单的网络, 后面应该做一个net.py
         # actor 和 critic 共享一个net
@@ -50,24 +53,25 @@ class A2C:
 
     def train(self, env, episode):
 
-        tqdm_e = tqdm(range(episode))
-        for i in tqdm_e:
-            state = env.reset()
-            cum_r = 0
-            done = False
-            while not done:
-                state_newaxis = state[np.newaxis,:]
-                action = self.actor.explore(state_newaxis)
-                next_state,reward,done, _ = env.step(action)
-                action_onehot = to_categorical(action, self.n_action)
-                ob = (state, reward, done, action_onehot, next_state)
-                self.sampling_pool.add_to_buffer(ob)
-                state = next_state
-                cum_r += reward
+        with graph.as_default():
+            tqdm_e = tqdm(range(episode))
+            for i in tqdm_e:
+                state = env.reset()
+                cum_r = 0
+                done = False
+                while not done:
+                    state_newaxis = state[np.newaxis,:]
+                    action = self.actor.explore(state_newaxis)
+                    next_state,reward,done, _ = env.step(action)
+                    action_onehot = to_categorical(action, self.n_action)
+                    ob = (state, reward, done, action_onehot, next_state)
+                    self.sampling_pool.add_to_buffer(ob)
+                    state = next_state
+                    cum_r += reward
+    
+                self.update()
+                self.cum_r.append(cum_r)
+                self.sampling_pool.clear()
 
-            self.update()
-            self.cum_r.append(cum_r)
-            self.sampling_pool.clear()
-
-            tqdm_e.set_description("Score: " + str(cum_r))
-            tqdm_e.refresh()
+                tqdm_e.set_description("Score: " + str(cum_r))
+                tqdm_e.refresh()

@@ -13,7 +13,7 @@
   - [x] Double DQN
 - [ ] AC
 - [x] A2C
-- [ ] A3C
+- [x] A3C
 - [ ] PPO
 
 ## Conceptions
