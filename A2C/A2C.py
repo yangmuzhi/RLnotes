@@ -72,6 +72,8 @@ class A2C:
                 self.update()
                 self.cum_r.append(cum_r)
                 self.sampling_pool.clear()
+                # 
+                #env.close()
 
                 tqdm_e.set_description("Score: " + str(cum_r))
                 tqdm_e.refresh()

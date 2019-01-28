@@ -28,4 +28,15 @@ def conv_shared(inputs):
     x = Flatten()(x)
     x = Activation('relu')(x)
     return x
-    
+
+def conv_breakout(inputs):
+    x = inputs
+    for _ in range(4):
+        x = Activation('relu')(x)
+        x = Conv2D(64, kernel_size=(3, 3), padding="same")(x)
+    x = Activation('relu')(x)
+    x = Conv2D(1, kernel_size=(1, 1), padding="same", activation=None)(x)
+    x = Flatten()(x)
+    x = Activation('relu')(x)
+    x = Dense(128, activation="relu")(x)
+    return x

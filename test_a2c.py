@@ -33,6 +33,7 @@ plt.plot(np.arange(len(a2c.cum_r)), np.array(a2c.cum_r))
 
 
 
+
 #####
 def play(N=100):
     r = []
