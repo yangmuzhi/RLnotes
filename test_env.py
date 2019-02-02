@@ -8,10 +8,9 @@ env.action_space.n
 def random_action(n_action):
     return random.choice(range(n_action))
 env.reset()
-while True:
-    state = env.render()
+done = False
+while not done:
     action = random_action(2)
     state, reward, done, _ = env.step(action)
-    if done :
-        break
+    print(reward)
 env.close()

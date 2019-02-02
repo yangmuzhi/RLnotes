@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jan 22 20:12:27 2019
 
-@author: muzhi
+a2c 训练cartpole
+
 """
 
 
@@ -17,27 +17,26 @@ from keras.utils import to_categorical
 import matplotlib.pyplot as plt
 import numpy as np
 from utils.net import simple_net
+from tqdm import tqdm
 
 a2c = A2C(state_shape=4, n_action=2, net=simple_net)
 a2c.actor.model.summary()
 env = gym.make("CartPole-v0")
+eps = int(sys.argv[1])
 
-a2c.train(env, 1000)
+a2c.train(env, eps)
 len(a2c.cum_r)
 
 plt.plot(np.arange(len(a2c.cum_r)), np.array(a2c.cum_r))
 
 
 
-
-
-
-
-
 #####
-def play(N=100):
+#用训后模型测试
+def play(N=200):
     r = []
-    for i in range(N):
+    tqdm_e = tqdm(range(N))
+    for i in tqdm_e:
         state = env.reset()
         cum_r = 0
         done = False
@@ -48,5 +47,5 @@ def play(N=100):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
-play(100)          
+play(200)          
 

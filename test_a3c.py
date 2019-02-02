@@ -1,35 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jan 24 08:49:24 2019
-
-@author: muzhi
+a3c 训练cartpole
 """
 
 import gym
 from A3C.A3C import A3C
-from A2C.A2C import A2C
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.net import simple_net
-import gym
+from tqdm import tqdm
+import sys
+
 env = gym.make('CartPole-v0')
 a3c = A3C(state_shape=4, n_action=2, net=simple_net)
-#a3c.train(env,100)
-a3c.trainAsy('CartPole-v0', 50)
+from multiprocessing import cpu_count
+cpu_count()
+eps = int(sys.argv[1])
+
+a3c.trainAsy('CartPole-v0', eps)
 
 
-
-
-"""
 len(a3c.cum_r)
 plt.plot(range(len(a3c.cum_r)), np.array(a3c.cum_r))
 
-
 #####
-def play(N=100):
+#用训后模型测试
+def play(N=200):
     r = []
-    for i in range(N):
+    tqdm_e = tqdm(range(N))
+    for i in tqdm_e:
         state = env.reset()
         cum_r = 0
         done = False
@@ -40,5 +40,5 @@ def play(N=100):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
-play(100)          
-"""
+play(200)          
+

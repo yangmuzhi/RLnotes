@@ -4,10 +4,11 @@ from tqdm import tqdm
 from dqn.agent import Agent
 from utils.sample_buffer import Sampling_Pool
 import os
+
 class DQN:
     """
     """
-    def __init__(self, state_shape, n_action, net):
+    def __init__(self, state_shape, n_action, net, model_path='model/dqn'):
         self.state_shape = state_shape
         self.n_action = n_action
         self.lr = 1e-4
@@ -16,6 +17,7 @@ class DQN:
         self.agent = Agent(self.state_shape,self.n_action,self.lr,0.9,net)
         self.sampling_pool = Sampling_Pool(self.sampling_size)
         self.cum_r = []
+        self.model_path = model_path
 
     def train_agent(self):
         state, reward, done, action, next_state = self.sampling_pool.get_sample(self.batch_size)
@@ -62,4 +64,7 @@ class DQN:
         self.save_model(f"final-{i}-eps-.h5")
 
     def save_model(self, save_name):
-        self.agent.q_eval_net.save(os.path.join("model", save_name))
+        path = self.model_path
+        if not os.path.exists(path):
+            os.makedirs(path)
+        self.agent.q_eval_net.save(os.path.join(path, save_name))
