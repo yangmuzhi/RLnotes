@@ -56,9 +56,9 @@ class DQN:
                     self.agent.transfer_weights()
             if (i > 10000) &  (not(i % 10000)):
                 self.save_model(f"{i}-eps-.h5")
-                
-                
-                
+
+
+
             tqdm_e.set_description("Score: " + str(cum_r))
             tqdm_e.refresh()
         self.save_model(f"final-{i}-eps-.h5")
