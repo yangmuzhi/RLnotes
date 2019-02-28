@@ -18,12 +18,6 @@ def simple_net(inputs):
     x = Dense(128, activation='relu')(x)
     return x
 
-def deeper_net(inputs):
-    x = Dense(64, activation='relu')(inputs)
-    x = Dense(128, activation='relu')(x)
-    x = Dense(64, activation='relu')(x)
-    return x
-
 def conv_shared(inputs):
     x = inputs
     for _ in range(2):

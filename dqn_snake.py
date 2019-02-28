@@ -1,13 +1,13 @@
 from snake_env import Snakes_subsonic
 from dqn.deepqn import DQN
-from utils.net import simple_net, deeper_net
+from utils.net import  simple_net
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import numpy as np
 env = Snakes_subsonic()
 state = env.reset()
 
-dqn = DQN(state_shape=84, n_action=3, net=deeper_net)
+dqn = DQN(state_shape=84, n_action=3, net=simple_net)
 dqn.agent.q_eval_net.summary()
 
 batch_size = 128
@@ -20,9 +20,9 @@ def play(N=200):
     r = []
     tqdm_e = tqdm(range(N))
     for i in tqdm_e:
-        
+
         state = env.reset()
-        
+
         cum_r = 0
         done = False
         while not done:
@@ -33,4 +33,4 @@ def play(N=200):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
-play(50) 
+play(50)
