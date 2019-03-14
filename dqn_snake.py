@@ -10,7 +10,7 @@ state = env.reset()
 dqn = DQN(state_shape=84, n_action=3, net=simple_net)
 dqn.agent.q_eval_net.summary()
 
-batch_size = 128
+batch_size = 32
 eps = 1000
 
 dqn.train(env, eps, batch_size)
@@ -33,4 +33,4 @@ def play(N=200):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
-play(50)
+play(10)

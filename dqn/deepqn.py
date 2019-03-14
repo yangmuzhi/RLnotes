@@ -52,8 +52,8 @@ class DQN:
 
                 if (self.sampling_pool.get_size() > self.batch_size):
                     self.train_agent()
-                    self.cum_r.append(cum_r)
                     self.agent.transfer_weights()
+            self.cum_r.append(cum_r)
             if (i > 10000) &  (not(i % 10000)):
                 self.save_model(f"{i}-eps-.h5")
 

@@ -86,7 +86,7 @@ class  Snakes_subsonic(object):
                                   self.loc + [1, 0]])
         else:
             raise NotImplementedError(" NO this dir, dir must be 0, 1, 2, 3!")
-        
+
         self.loc_choice = loc_choice
         if action == 0:
             next_loc = loc_choice[0]
@@ -206,5 +206,3 @@ class Render_ground():
         self._draw_ground(body, ground)
         self.window.update()
         self.can.destroy()
-
-
