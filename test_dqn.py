@@ -8,7 +8,7 @@ dqn 训练cartpole
 
 import gym
 import sys
-sys.path.append('./dqn')
+
 from deepqn import DQN
 from utils.net import simple_net
 
@@ -36,4 +36,4 @@ def play(N=200):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
-play(200) 
+play(200)

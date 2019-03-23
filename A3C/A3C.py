@@ -20,10 +20,16 @@ class A3C(A2C):
 
         super(A3C, self).__init__(state_shape,n_action,net,model_path=model_path) 
 
-    def trainAsy(self, env_name, episodes):
+    def trainAsy(self, env_name, episodes, use_gym=True):
         """异步地使用A2C的train方法
         """
-        envs = [gym.make(env_name) for i in range(self.n_threads)]
+        # use_gym = False env_name 是一个没有实例化的类
+        # 
+        if use_gym:
+            envs = [gym.make(env_name) for i in range(self.n_threads)]
+        else:
+            envs = [env_name() for i in range(self.n_threads)]
+        
         sampling_pools = [Sampling_Pool() for i in range(self.n_threads)]
         threads = [Thread(target=self.train, args=(envs[i], episodes, sampling_pools[i])) for i in range(self.n_threads)]
         for t in threads:

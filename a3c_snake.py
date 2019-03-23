@@ -1,5 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+a3c play snake
+"""
+
 from snake_env import Snakes_subsonic
-from dqn.deepqn import DQN
+from A3C.A3C import A3C
 from utils.net import  simple_net
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -7,14 +13,14 @@ import numpy as np
 env = Snakes_subsonic()
 state = env.reset()
 
-dqn = DQN(state_shape=84, n_action=3, net=simple_net)
-dqn.agent.q_eval_net.summary()
+a3c = A3C(state_shape=84, n_action=3, net=simple_net,
+          model_path='model/a3c/snake_demo')
 
 batch_size = 32
-eps = 5000
+eps = 2000
 
-dqn.train(env, eps, batch_size)
-plt.plot(range(len(dqn.cum_r)),dqn.cum_r)
+a3c.trainAsy(Snakes_subsonic, eps, use_gym=False)
+plt.plot(range(len(a3c.cum_r)),a3c.cum_r)
 
 def play(N=200):
     r = []
