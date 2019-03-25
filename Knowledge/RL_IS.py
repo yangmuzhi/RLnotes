@@ -27,6 +27,7 @@ class MC_IS_wrapper:
         self.discount = discount
         self.behavoir_policy = 1 / self.n_actions
         self.sard = []
+        self.e = e
 
     def e_greedy_explore(self, s):
         """探索
