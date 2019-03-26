@@ -7,22 +7,30 @@
 
 
 ## RL Algorithms
-- [x] tabular Q learning
+- [x] TD
+
+  - [x] tabular saras
+  - [x] tabular Q learning
+  - [x] tabular double  q learning
 
 - [x] DQN
   - [ ] Classic DQN
   - [ ] Experience replay
   - [x] Double DQN
+
+- [x] PG
 - [ ] AC
 - [x] A2C
 - [x] A3C
 - [ ] PPO
 
 ## Knowledge
-- [ ] Importance Sampling
+- [x] Importance Sampling
 
 - [ ] Bellman Equation
-- [ ] Q leanring
+- [x] Q leanring
+- [x] TD
+- [x] Sarsa
 
 ## Examples
 

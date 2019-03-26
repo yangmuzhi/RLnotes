@@ -30,21 +30,7 @@ class Actor:
     def update(self):
         """
         """
-        weighted_actions = K.sum(self.action * self.model.output, axis=1)
-        eligibility = K.log(weighted_actions + 1e-10) * K.stop_gradient(self.td_error)
-        entropy = K.sum(self.model.output * K.log(self.model.output + 1e-10), axis=1)
-        loss = 0.001 * entropy - K.sum(eligibility)
-        # idx = K.shape(self.action)[0] * K.shape(self.action)[1] + K.argmax(self.action) 
-        # weighted_actions = K.cumprod(self.model.output[idx])
-        # loss = - K.log(weighted_actions) * self.td_error
-
-        updates = self.opt.get_updates(self.model.trainable_weights, [], loss)
-        return K.function([self.model.input, self.action, self.td_error], [], updates=updates)
-
-    #def fit(self, state, action_prob):
-    #    """ Perform one epoch of training
-    #    """
-    #    self.model.fit(state, action_prob, epochs=1, verbose=0)
+        pass
 
     def action_prob(self, state):
         """  给出动作的概率
@@ -52,5 +38,7 @@ class Actor:
         return self.model.predict(state)
 
     def explore(self, state):
+        """
+        """
         prob = self.action_prob(state)
         return np.random.choice(np.arange(self.n_action), p=prob.ravel())
