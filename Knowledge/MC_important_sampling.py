@@ -19,7 +19,7 @@ def q(x, a, b):
         return np.array([1/abs(b - a) for i in np.arange(x.shape[0])])
     
 #draw N samples that conform to q(x), and then draw M from then that approximately conform to p(x)
-N=100000
+N=1000
 M=1000
 
 x = np.random.uniform(-10, 10, N)

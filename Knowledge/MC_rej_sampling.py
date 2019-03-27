@@ -75,7 +75,7 @@ class MC_rej_sampling:
         
         
 # 1
-mc = MC_rej_sampling(p, a=-5, b=5, N=100000)      
+mc = MC_rej_sampling(p, a=-5, b=5, N=1000)      
 res = mc.sampling_matrix(4)
 mc.ratio
 mc.plot(res)
