@@ -9,7 +9,7 @@ dqn 训练cartpole
 import gym
 import sys
 
-from deepqn import DQN
+from dqn.deepqn import DQN
 from utils.net import simple_net
 
 eps = int(sys.argv[1])

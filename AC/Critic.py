@@ -4,6 +4,7 @@ from keras.models import Model
 from keras.layers import Input, Dense
 from keras.optimizers import RMSprop
 
+
 class Critic:
     """
 
@@ -14,8 +15,9 @@ class Critic:
         self.output_shape = output_shape
         self.lr = lr
         self.model = self.build_net(share_net)
+
         self.reward = K.placeholder(shape=(None,))
-        self.state_value = K.placeholder(shape=(None,))
+        self.next_state_value = K.placeholder(shape=(None,))
         self.opt = RMSprop(lr=self.lr)
 
     def build_net(self, share_net):
@@ -32,11 +34,6 @@ class Critic:
         updates = self.opt.get_updates(self.model.trainable_weights, [], critic_loss)
 
         return K.function([self.model.input, self.state_value], [], updates=updates)
-
-    #def fit(self, state, state_value):
-    #    """ Perform one epoch of training
-    #    """
-    #    self.model.fit(state, state_value, epochs=1, verbose=0)
 
     def value(self, state):
         """ Critic Value Prediction

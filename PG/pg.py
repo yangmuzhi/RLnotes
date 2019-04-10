@@ -57,7 +57,7 @@ class PG:
                     name="G_n")
         x = self.net(self.state)
         self.act_prob = Dense(self.n_actions, activation="softmax")(x)
-        
+
         with tf.name_scope('loss'):
     # neg_log_prob = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.act_prob, labels=self.tf_acts)
             neg_log_prob = tf.reduce_sum(

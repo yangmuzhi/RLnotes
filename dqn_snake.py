@@ -1,4 +1,4 @@
-from snake_env import Snakes_subsonic
+from Env.snake_env import Snakes_subsonic
 from dqn.deepqn import DQN
 from utils.net import  simple_net
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ dqn = DQN(state_shape=84, n_action=3, net=simple_net)
 dqn.agent.q_eval_net.summary()
 
 batch_size = 32
-eps = 5000
+eps = 1000
 
 dqn.train(env, eps, batch_size)
 plt.plot(range(len(dqn.cum_r)),dqn.cum_r)

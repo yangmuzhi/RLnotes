@@ -12,7 +12,7 @@ import keras.backend as K
 import os
 
 sampling_pool = Sampling_Pool()
-class A2C:
+class AC:
     """
     """
     def __init__(self, state_shape, n_action, net, model_path='model/a2c'):
@@ -79,8 +79,6 @@ class A2C:
                 if (i > 10000) &  (not(i % 10000)):
                     self.save_model(f"{i}-eps-.h5")
             self.save_model(f"final-{i}-eps-.h5")
-
-
 
     def save_model(self, save_name):
         path = self.model_path
