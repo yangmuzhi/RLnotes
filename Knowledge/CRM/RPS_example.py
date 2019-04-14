@@ -105,6 +105,7 @@ class RPS_Env:
             print("cum_regrets:",self.agent0.cum_regrets)
 
 
+
 # test
 agent0 = Agent()
 agent1 = Agent(init_policy=np.array([0.3,0.3,0.4]), fixed=True)
