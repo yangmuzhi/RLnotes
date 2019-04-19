@@ -35,12 +35,6 @@ class Kuhn_Poker:
     def _shuffle(self):
         np.random.shuffle(self.cards)
 
-    # def _is_chance_node(self,node):
-    #     return True
-    #
-    # def _is_decision_node(self,node):
-    #     return True
-
     def _end_info(self):
 
         if self.card_in_hand[0] < self.card_in_hand[1]:

@@ -30,7 +30,11 @@ class Actor:
     def update(self):
         """
         """
-        pass
+        weighted_actions = K.sum(self.action * self.model.output, axis=1)
+        loss = - K.sum(K.log(weighted_actions + 1e-10) * K.stop_gradient(self.td_error))
+        updates = self.opt.get_updates(self.model.trainable_weights, [], loss)
+        return K.function([self.model.input, self.action, self.td_error], [], updates=updates)
+
 
     def action_prob(self, state):
         """  给出动作的概率
