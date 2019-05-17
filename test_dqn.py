@@ -8,6 +8,9 @@ dqn 训练cartpole
 
 import gym
 import sys
+from tqdm import tqdm
+import numpy as np
+import matplotlib.pyplot as plt
 
 from dqn.deepqn import DQN
 from utils.net import simple_net
