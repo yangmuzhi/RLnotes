@@ -44,14 +44,26 @@ class A2C:
 
         return Model(inputs, x)
 
+    def discount(self, reward):
+        """ 没有使用discount,这是一个错误
+        """
+        discounted_reward, cumul_reward = np.zeros_like(reward), 0
+        for t in reversed(range(0, len(reward))):
+            cumul_reward = reward[t] + cumul_reward * self.gamma
+            discounted_reward[t] = cumul_reward
+        return discounted_reward
+
     def update(self, sampling_pool):
         state, reward, done, action, next_state = \
             sampling_pool.get_sample(shuffle=False)
         value = self.critic.value(state)
-        next_value = self.critic.value(next_state)
-        td_error = reward + self.gamma * next_value - value
-        self.actor_update([state, action, td_error])
-        self.critic_update([state, value])
+        # next_value = self.critic.value(next_state)
+        # td_error = reward + self.gamma * next_value - value
+        # new_value = reward + self.gamma * next_value
+        discounted_reward = self.discount(reward)
+        advantages = discounted_reward - value
+        self.actor_update([state, action, advantages])
+        self.critic_update([state, discounted_reward])
         sampling_pool.clear()
 
     def train(self, env, episode, sampling_pool=sampling_pool):

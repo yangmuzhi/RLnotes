@@ -56,27 +56,48 @@ class DecNode(Node):
         self.children.append(node)
 
     @property
-    def isstate(self):
+    def isdec(self):
         return self.type is "dec"
 
+# game tree
 
 class Tree:
+    """
+    root 是一个node类，游戏初始化后，child 添加 state
+    """
     def __init__(self, debug=False):
         self.root = Node(True)
         self.debug = debug
 
-    def lookup(self, h):
-        assert not self.root.isend, "root未分裂"
-        next_node = self.root
+    # def lookup(self, h):
+    #     assert not self.root.isend, "root未分裂"
+    #     next_node = self.root
+    #
+    #     while not next_node.isend:
+    #         node = next_node
+    #
+    #         next_end = node.isend
+    #     return node.y_value.mean()
 
-        while not next_node.isend:
-            node = next_node
+    def look_node_exist(self, h_dict):
 
-            next_end = node.isend
-        return node.y_value.mean()
+        return
 
-    def generate(self, node, data):
+    def add_decnode(self, node):
+        assert node.type == "dec"
+        return
+
+    def add_statenode(self, node):
+        assert node.type == "state"
+        return
+
+    def generate(self, node, h_dict):
+        """根据h_dict一个一个添加进去 """
+
         # 数据不是空的
+
+        if self.look_node_exist():
+            pass
         for child in node.children:
             # 分裂节点
             data = data

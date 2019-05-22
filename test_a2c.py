@@ -22,15 +22,14 @@ from tqdm import tqdm
 a2c = A2C(state_shape=4, n_action=2, net=simple_net)
 a2c.actor.model.summary()
 env = gym.make("CartPole-v0")
-eps = int(sys.argv[1])
-
+# eps = int(sys.argv[1])
+eps = 3000
 a2c.train(env, eps)
+
 len(a2c.cum_r)
 
 plt.plot(np.arange(len(a2c.cum_r)), np.array(a2c.cum_r))
-
-
-
+plt.show()
 #####
 #用训后模型测试
 def play(N=200):
@@ -47,5 +46,5 @@ def play(N=200):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
-play(200)          
-
+    plt.show()
+play(200)

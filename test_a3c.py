@@ -16,7 +16,7 @@ env = gym.make('CartPole-v0')
 a3c = A3C(state_shape=4, n_action=2, net=simple_net)
 from multiprocessing import cpu_count
 cpu_count()
-eps = int(sys.argv[1])
+eps = 500
 
 a3c.trainAsy('CartPole-v0', eps)
 
@@ -40,5 +40,4 @@ def play(N=200):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
-play(200)          
-
+play(200)

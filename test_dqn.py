@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from dqn.deepqn import DQN
 from utils.net import simple_net
 
-eps = int(sys.argv[1])
+eps = 2000
 batch_size = 128
 
 dqn = DQN(state_shape=4, n_action=2, net=simple_net)
@@ -39,4 +39,5 @@ def play(N=200):
             cum_r += reward
         r.append(cum_r)
     plt.plot(range(len(r)), np.array(r))
+    plt.show()
 play(200)

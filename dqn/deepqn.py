@@ -33,7 +33,7 @@ class DQN:
                 q[i, action[i]] = reward[i] + self.gamma * q_target[i,max_action]
         self.agent.update(state, q)
 
-    def train(self, env, episode, batch_size=64):
+    def train(self, env, episode, batch_size=64, freq=5):
         self.batch_size = batch_size
         tqdm_e = tqdm(range(episode))
 
@@ -52,13 +52,11 @@ class DQN:
 
                 if (self.sampling_pool.get_size() > self.batch_size):
                     self.train_agent()
-                    self.agent.transfer_weights()
+                    if  i % freq == 0:
+                        self.agent.transfer_weights()
             self.cum_r.append(cum_r)
             if (i > 10000) &  (not(i % 10000)):
                 self.save_model(f"{i}-eps-.h5")
-
-
-
             tqdm_e.set_description("Score: " + str(cum_r))
             tqdm_e.refresh()
         self.save_model(f"final-{i}-eps-.h5")
