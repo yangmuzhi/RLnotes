@@ -1,4 +1,4 @@
-from A2C.A2C import A2C
+from ..A2C.A2C import A2C
 import time
 from threading import Thread
 from multiprocessing import cpu_count

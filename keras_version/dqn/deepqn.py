@@ -1,8 +1,8 @@
 
 import numpy as np
 from tqdm import tqdm
-from dqn.agent import Agent
-from utils.sample_buffer import Sampling_Pool
+from .agent import Agent
+from ..utils.sample_buffer import Sampling_Pool
 import os
 
 class DQN:

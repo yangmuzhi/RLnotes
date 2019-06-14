@@ -3,7 +3,6 @@ agent use keras
 """
 
 import numpy as np
-np.random.uniform(1130,1300)
 import random
 from keras.optimizers import Adam
 from keras.models import Model

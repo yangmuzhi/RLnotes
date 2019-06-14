@@ -12,9 +12,9 @@ import tkinter as tk
 class  Snakes_subsonic(object):
 
     def __init__(self):
-        self.width = 10
-        self.height = 5
-        self.born_loc = np.array([5, 5])
+        self.width = 50
+        self.height = 40
+        self.born_loc = np.array([20, 20])
         self.len = 3
         self.action = [0,1,2]
         self.count = 0
@@ -37,8 +37,23 @@ class  Snakes_subsonic(object):
         self.ground[:, 0] = -1
         self.ground[:, -1] = -1
         # 食物位置 暂时一次性布置所有食物
-        self.food_loc = np.array([[1, 5], [1, 1], [4, 8]])
+        self.food_loc = self._random_place()
         self._place_food(self.food_loc)
+
+    def _random_place(self):
+        d = 0
+        while not d:
+            x = np.random.choice(np.arange(1,self.height-1))
+            y = np.random.choice(np.arange(1,self.width-1))
+            if not (self.ground[x,y] == 2):
+                break
+        return [[x,y]]
+
+    def _check_if_no_food(self):
+        d = False
+        if np.sum(self.ground == 2) == 0:
+            d = True
+        return d
 
     def _snake_init(self, born_loc, length):
         #
@@ -55,12 +70,17 @@ class  Snakes_subsonic(object):
             self.ground[x,y] = 2
 
     def step(self, action):
+
         done, reward = self._move(action)
         self.count += 1
         if done :
             self.try_times.append(self.count)
+        # 没有食物 重新放置
+        if self._check_if_no_food():
+            self.food_loc = self._random_place()
+            self._place_food(self.food_loc)
 
-        return self.ground.flatten(), reward, done, {}
+        return self.ground, reward, done, {}
 
 
     def _move(self, action):
@@ -124,7 +144,7 @@ class  Snakes_subsonic(object):
             done, reward = True, 0
         # 撞到墙或者吃到自己
         elif abs(content) == 1:
-            done, reward = True, -10
+            done, reward = True, -100
         else:
             reward = self._follow_by_head(next_loc, content)
 
@@ -133,7 +153,7 @@ class  Snakes_subsonic(object):
 
     def _follow_by_head(self, next_loc, content):
         # 没有吃到东西，往前走
-        reward = 0
+        reward = -0.5
         if content == 0:
             self.ground[next_loc[0], next_loc[1]] = 1
             self.ground[self.body[-1][0], self.body[-1][1]] = 0
@@ -148,7 +168,7 @@ class  Snakes_subsonic(object):
         self._ground_init(self.height, self.width)
         self._snake_init(self.born_loc, self.len)
         self.count = 0
-        return self.ground.flatten()
+        return self.ground
 
     def render(self):
         if self.first_render:

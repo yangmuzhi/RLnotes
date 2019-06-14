@@ -5,8 +5,8 @@ from keras import regularizers
 from keras.utils import to_categorical
 from keras.layers import Input, Dense, Flatten
 from utils.sample_buffer import Sampling_Pool
-from A2C.Actor import Actor
-from A2C.Critic import Critic
+from .Actor import Actor
+from .Critic import Critic
 import tensorflow as tf
 import keras.backend as K
 import os
